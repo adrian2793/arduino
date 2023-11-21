@@ -1,3 +1,5 @@
+#include <engine_control_component.h>
+
 int engine1 = 10;
 int engine2 = 5;
 
