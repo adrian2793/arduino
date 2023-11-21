@@ -7,6 +7,11 @@ int input_pin2 = 8;
 int input_pin3 = 7;
 int input_pin4 = 6;
 
+void engine_control(String pin, String engine_id, int mode, int speed) {
+  digitalWrite(pin, mode);
+  analogWrite(engine_id, speed);
+}
+
 void setup() {
   pinMode(engine1, OUTPUT);    
   pinMode(engine2, OUTPUT);
