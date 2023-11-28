@@ -2,8 +2,7 @@
 
 void engine_control(int pin, int engine_id, int mode, int speed) {
   digitalWrite(pin, mode);
-  if(speed == "") {
-  } else {
+  if(speed != "") {
     analogWrite(engine_id, speed);
   }
 }
