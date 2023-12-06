@@ -17,3 +17,7 @@ void setup() {
   DirectCurrent motor1 = { 9, 8, 10 };
   DirectCurrent motor2 = { 7, 6, 5 };
 }
+
+void loop() {
+  motor1.move(1, 0, 200);
+}
