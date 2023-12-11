@@ -1,4 +1,7 @@
 #include <DirectCurrent-Motor-Module.h>
+#include <Serial-Monitor.h>
+
+SerialMonitor serial;
 
 int engine1 = 10;
 int input_pin1 = 9;
@@ -16,6 +19,7 @@ void setup() {
   pinMode(input_pin4, OUTPUT);
   DirectCurrent motor1 = { 9, 8, 10 };
   DirectCurrent motor2 = { 7, 6, 5 };
+  serial.initialize();
 }
 
 void loop() {
