@@ -1,19 +1,23 @@
-#include <DirectCurrent-Motor-Module.h>
+#include <DirectCurrent_Motor_Module.h>
+#include <Servo_Motor_Module.h>
 
-DirectCurrent motor1 = { 9, 8, 10 };
-DirectCurrent motor2 = { 7, 6, 5 };
+DirectCurrent motor1 = { 12, 13, 8 };
+DirectCurrent motor2 = { 10, 11, 9 };
+Servo2 servo1 = { 6 };
 
-int engine1 = 10;
-int input_pin1 = 9;
-int input_pin2 = 8;
-int engine2 = 5;
-int input_pin3 = 7;
-int input_pin4 = 6;
-int sensor_output;
-int sensor_input;
+int engine1 = 8;
+int input_pin1 = 12;
+int input_pin2 = 13;
+int engine2 = 9;
+int input_pin3 = 10;
+int input_pin4 = 11;
+int sensor_output = 7;
+int sensor_input = 6;
 long sensor_distance = 0;
 
 void setup() {
+  Serial.begin(9600);
+  servo1.attach(6);
   pinMode(engine1, OUTPUT);    
   pinMode(engine2, OUTPUT);
   pinMode(input_pin1, OUTPUT);
@@ -25,16 +29,16 @@ void setup() {
 }
 
 void loop() {
-  motor1.move(motor1, 1, 0, 200);
-  digitalWrite(signal_output, 0);
+  digitalWrite(sensor_output, 0);
   delay(5);
-  digitalWrite(signal_output, 1);
+  digitalWrite(sensor_output, 1);
   delayMicroseconds(10);
-  digitalWrite(signal_output, 0);
-  long time = pulseIn(signal_echo, 1);
-  distance = (time / 2) * 0.03432;
+  digitalWrite(sensor_output, 0);
+  long time = pulseIn(sensor_input, 1);
+  sensor_distance = (time / 2) * 0.03432;
+  Serial.println(sensor_distance);
   delay(500);
-  if (distance < 100) {
-    
+  if (sensor_distance < 100) {
+    motor1.move(1, 0, 100);
   }
 }
