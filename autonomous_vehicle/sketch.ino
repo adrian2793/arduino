@@ -23,7 +23,7 @@ void setup() {
   Serial.begin(250000);
   servo1.attach(4);
   servo1.write(90);
-  pinMode(engine1, OUTPUT);    
+  pinMode(engine1, OUTPUT);
   pinMode(engine2, OUTPUT);
   pinMode(input_pin1, OUTPUT);
   pinMode(input_pin2, OUTPUT);
@@ -34,15 +34,13 @@ void setup() {
 }
 
 void loop() {
-  if (sensor_distance > 20) {
-    motor1.move(1, 0, 100);
-    motor2.move(1, 0, 100);
-  }
+  motor1.move(1, 0, 100);
+  motor2.move(1, 0, 100);
   if (pos < 30) {
     degree = 1;
   }
-  if (pos > 15) {
-      degree = -1;
+  if (pos > 1) {
+    degree = -1;
   }
   if (pos > 60) {
     position_state = "right";
@@ -51,7 +49,6 @@ void loop() {
     position_state = "left";
   }
   pos = pos + degree;
-  position_status = "right";
   // servo1.write(pos);
   delay(10);
   digitalWrite(sensor_output, 0);
@@ -66,6 +63,7 @@ void loop() {
     motor1.move(1, 0, 100);
     motor2.move(0, 1, 200);
   } else {
-    
+    motor1.move(0, 1, 100);
+    motor2.
   }
 }
