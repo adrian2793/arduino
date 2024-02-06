@@ -64,6 +64,6 @@ void loop() {
     motor2.move(0, 1, 200);
   } else {
     motor1.move(0, 1, 100);
-    motor2.
+    motor2.move(1, 0, 200);
   }
 }
