@@ -1,9 +1,9 @@
-#include <Servo.h>
+#include <Servo_Motor_Module.h>
 #include <DirectCurrent_Motor_Module.h>
 
 DirectCurrent motor1 = { 12, 13, 8 };
 DirectCurrent motor2 = { 10, 11, 9 };
-Servo servo1;
+Servo2 servo1;
 
 int engine1 = 8;
 int input_pin1 = 12;
