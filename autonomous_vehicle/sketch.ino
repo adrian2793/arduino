@@ -33,7 +33,14 @@ void setup() {
 }
 
 void loop() {
+  if (sensor_distance > 20) {
+    motor1.move(1, 0, 100);
+    motor2.move(1, 0, 100);
+  }
   for (pos = 0; pos <= 100; pos += 1) {
+    if (pos < 60) {
+      position_status = "right";
+    }
     Serial.print("pos -> ");
     Serial.println(pos);
     servo1.write(pos);
