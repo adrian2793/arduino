@@ -63,12 +63,10 @@ void loop() {
   long time = pulseIn(sensor_input, 1);
   sensor_distance = (time / 2) * 0.03432;
   Serial.println(sensor_distance);
-  if (sensor_distance < 45) {
+  if (position_status = "left") {
     motor1.move(1, 0, 100);
     motor2.move(0, 1, 200);
-  }
-}
-  if (sensor_distance < 100) {
-    motor1.move(1, 0, 100);
+  } else {
+    
   }
 }
