@@ -45,14 +45,18 @@ void loop() {
     sensor_distance = (time / 2) * 0.03432;
     Serial.println(sensor_distance);
     if (sensor_distance < 20) {
-      if (position_status = 2){
+      if (position_status = 2 && sensor_distance != 3 && sensor_distance != 2 && sensor_distance != 1 && sensor_distance != 0){
         motor1.move(1, 0, 100);
         motor2.move(0, 1, 200);
-        } else if (position_status = 1) {
+        } else if (position_status = 1 && sensor_distance != 3 && sensor_distance != 2 && sensor_distance != 1 && sensor_distance != 0) {
           motor1.move(0, 1, 100);
           motor2.move(1, 0, 200);
         }
-      } else {
+      } else if (sensor_distance < 3) {
+        motor1.move(0, 1, 200);
+        motor1.move(0, 1, 200);
+      }
+      if (sensor_distance > 20 && sensor_distance != 3 && sensor_distance != 2 && sensor_distance != 1 && sensor_distance != 0) {
         motor1.move(1, 0, 100);
         motor2.move(1, 0, 100);
       }
@@ -60,14 +64,14 @@ void loop() {
         x = -1;
         i = 0;
         servo1.move(-90);
-    }
-    delay(5);
-    pos = degree;
-    if (pos < 90) {
+      }
+      delay(5);
+      pos = degree;
+      if (pos < 90) {
       position_status = 2; // right
-    }
-    if (pos > 89) {
+      }
+      if (pos > 89) {
       position_status = 1; // left
+      }
     }
   }
-}
