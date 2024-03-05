@@ -26,6 +26,8 @@ bool lcd_task_finished = false;
 int time_since_last_run = 0;
 int i;
 int dot_1run;
+int dot_2run = 0;
+String board_language = "en";
 
 void setup() {
   lcd_port.init();
@@ -46,10 +48,39 @@ void setup() {
 void loop() {
   dot_1run = dot_1run + 1;
   lcd_port.clear();
-  lcd_port.setCursor(0, 0);
-  lcd_port.print(sensor_distance);
-  lcd_port.setCursor(0, 1);
-  lcd_port.print("Cycles " + String(dot_1run));
+  switch (dot_2run) {
+  case 0:
+    lcd_port.setCursor(0, 0);
+    lcd_port.print("Board Computer 1");
+    lcd_port.setCursor(0, 1);
+    lcd_port.print("Distance " + String(sensor_distance));
+    dot_2run = 1;
+    break;
+  case 1:
+    lcd_port.setCursor(0, 0);
+    lcd_port.setCursor(0, 0);
+    lcd_port.print("Board Computer 2");
+    lcd_port.setCursor(0, 1);
+    lcd_port.print("Cycles " + String(dot_1run));
+    dot_2run = 2;
+    break;
+  case 2:
+    lcd_port.setCursor(0, 0);
+    lcd_port.setCursor(0, 0);
+    lcd_port.print("Board Computer 3");
+    lcd_port.setCursor(0, 1);
+    lcd_port.print("Empty slot");
+    dot_2run = 3;
+    break;
+  case 3:
+    lcd_port.setCursor(0, 0);
+    lcd_port.setCursor(0, 0);
+    lcd_port.print("Board Computer 4");
+    lcd_port.setCursor(0, 1);
+    lcd_port.print("Empty slot");
+    dot_2run = 0;
+    break;
+}
   int x = 1;
   for (i = 0; i > -1; i = i + x) {
     time_since_last_run = i;
