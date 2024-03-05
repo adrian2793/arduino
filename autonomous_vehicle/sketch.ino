@@ -1,6 +1,8 @@
 #include <Servo_Motor_Module.h>
 #include <DirectCurrent_Motor_Module.h>
+#include <LiquidCrystal_I2C.h>
 
+LiquidCrystal_I2C lcd_port(0x27, 16, 2);
 DirectCurrent motor1 = { 12, 13, 8 };
 DirectCurrent motor2 = { 10, 11, 9 };
 Servo2 servo1;
@@ -20,8 +22,15 @@ int position_status = 0;
 int degree = 0;
 bool move_left = false;
 bool move_right = false;
+bool lcd_task_finished = false;
+int time_since_last_run = 0;
+int i;
+int dot_1run;
 
 void setup() {
+  lcd_port.init();
+  lcd_port.backlight();
+  lcd_port.setCursor(0, 0);
   Serial.begin(250000);
   servo1.attach(3);
   pinMode(engine1, OUTPUT);
@@ -35,8 +44,15 @@ void setup() {
 }
 
 void loop() {
+  dot_1run = dot_1run + 1;
+  lcd_port.clear();
+  lcd_port.setCursor(0, 0);
+  lcd_port.print(sensor_distance);
+  lcd_port.setCursor(0, 1);
+  lcd_port.print("Cycles " + String(dot_1run));
   int x = 1;
-  for (int i = 0; i > -1; i = i + x) {
+  for (i = 0; i > -1; i = i + x) {
+    time_since_last_run = i;
     servo1.move(i);
     digitalWrite(sensor_output, 0);
     digitalWrite(sensor_output, 1);
