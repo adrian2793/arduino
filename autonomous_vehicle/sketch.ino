@@ -101,7 +101,7 @@ void drive_right() {
         motor1.move(motor1_input1, motor1_input2, motor1_speed);
         motor2.move(motor2_input1, motor2_input2, motor2_speed);
     }
-    } else {
+    } else if (sensor_distance > 20) {
       motor1_input1 = 1;
       motor1_input2 = 0;
       motor1_speed = motor1_speed + 10;
