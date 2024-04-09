@@ -32,10 +32,11 @@ String current_task = "1";
 String current_task2 = "1";
 int motor1_input1 = 0;
 int motor1_input2 = 0;
-int motor1_speed = 0;
+int motor1_speed = 150;
 int motor2_input1 = 0;
 int motor2_input2 = 0;
-int motor2_speed = 0;
+int motor2_speed = 150;
+int x = 1;
 
 void setup() {
   lcd_port.init();
@@ -57,24 +58,117 @@ void setup() {
 }
 
 void loop() {
+  drive_right();
+}
+
+void drive_right() {
   dot_2run = 0;
-  current_task = "motor1{" + String(motor1_input1) + ", " + String(motor1_input2) + ", " + String(motor1_speed) + "}";
-  current_task2 = "motor2{" + String(motor2_input1) + ", " + String(motor2_input2) + ", " + String(motor2_speed)+ "}";
+  current_task = "Drive right";
+  current_task2 = String(motor2_input1) + ", " + String(motor2_input2) + ", " + String(motor2_speed);
   dot_1run = dot_1run + 1;
   lcd_port.clear();
   lcd_port.setCursor(0, 0);
   lcd_port.print(current_task);
   lcd_port.setCursor(0, 1);
   lcd_port.print(current_task2);
-  for (int y = 1; y <= 14; y = 16) {
-    lcd_port.setCursor(0, 0);
-    lcd_port.scrollDisplayLeft();
-    lcd_port.setCursor(0, 1);
-    lcd_port.scrollDisplayLeft();
-    delay(500);
+  x = 1;
+  Serial.print("Speed1: ");
+  Serial.println(motor1_speed);
+  Serial.print("Speed2: ");
+  Serial.println(motor2_speed);
+  pos = i;
+  servo1.move(0);
+  digitalWrite(sensor_output, 0);
+  digitalWrite(sensor_output, 1);
+  digitalWrite(sensor_output, 0);
+  long time = pulseIn(sensor_input, 1);
+  sensor_distance = (time / 2) * 0.03432;
+  Serial.println(sensor_distance);
+  if (sensor_distance < 20) {
+    if (sensor_distance != 3 && sensor_distance != 2 && sensor_distance != 1 && sensor_distance != 0) {
+        motor1_input1 = 1;
+        motor1_input2 = 0;
+        motor1_speed = motor1_speed - 10;
+        if (motor2_speed < 0) {
+          motor2_speed = 0;
+        }
+        motor2_input1 = 1;
+        motor2_input2 = 0;
+        motor2_speed = motor2_speed + 10;
+        if (motor2_speed > 255) {
+          motor2_speed = 255;
+        }
+        motor1.move(motor1_input1, motor1_input2, motor1_speed);
+        motor2.move(motor2_input1, motor2_input2, motor2_speed);
+    }
+    } else {
+      motor1_input1 = 1;
+      motor1_input2 = 0;
+      motor1_speed = motor1_speed + 10;
+      if (motor2_speed > 255) {
+        motor2_speed = 255;
+      }
+      motor2_input1 = 1;
+      motor2_input2 = 0;
+      motor2_speed = motor2_speed - 10;
+      if (motor2_speed < 0) {
+        motor2_speed = 0;
+      }
+      motor1.move(motor1_input1, motor1_input2, motor1_speed);
+      motor2.move(motor2_input1, motor2_input2, motor2_speed);
+    }
+    if (sensor_distance < 3) {
+      motor1_input1 = 0;
+      motor1_input2 = 1;
+      motor1_speed = 0;
+      motor2_input1 = 0;
+      motor2_input2 = 1;
+      motor2_speed = 0;
+      motor1.move(motor1_input1, motor1_input2, motor1_speed);
+      motor1.move(motor2_input1, motor2_input2, motor2_speed);
+    }
+    if (sensor_distance > 20 && sensor_distance != 3 && sensor_distance != 2 && sensor_distance != 1 && sensor_distance != 0) {
+      motor1_input1 = 1;
+      motor1_input2 = 0;
+      motor1_speed = 100;
+      motor2_input1 = 1;
+      motor2_input2 = 0;
+      motor2_speed = 100;
+      motor1.move(motor1_input1, motor1_input2, motor1_speed);
+      motor2.move(motor2_input1, motor2_input2, motor2_speed);
+    }
+    delay(5);
   }
-  int x = 1;
+
+void drive_autonomous() {
+  motor1_speed = 150;
+  motor2_speed = 150;
+  x = 1;
+  dot_2run = 0;
+  current_task = "1{" + String(motor1_input1) + ", " + String(motor1_input2) + ", " + String(motor1_speed) + "}";
+  current_task2 = "2{" + String(motor2_input1) + ", " + String(motor2_input2) + ", " + String(motor2_speed)+ "}";
+  dot_1run = dot_1run + 1;
+  lcd_port.clear();
+  lcd_port.setCursor(0, 0);
+  lcd_port.print(current_task);
+  lcd_port.setCursor(0, 1);
+  lcd_port.print(current_task2);
   for (i = 0; i > -1; i = i + x) {
+    Serial.print("Speed1: ");
+    Serial.println(motor1_speed);
+    Serial.print("Speed2: ");
+    Serial.println(motor2_speed);
+    pos = i;
+    if (pos > 55) {
+      position_status = 2; // left
+      Serial.print("Position: ");
+      Serial.println(position_status);
+    }
+    else {
+      position_status = 1; // right
+      Serial.print("Position: ");
+      Serial.println(position_status);
+    }
     servo1.move(i);
     digitalWrite(sensor_output, 0);
     digitalWrite(sensor_output, 1);
@@ -86,30 +180,31 @@ void loop() {
       if (position_status = 2 && sensor_distance != 3 && sensor_distance != 2 && sensor_distance != 1 && sensor_distance != 0){
         motor1_input1 = 1;
         motor1_input2 = 0;
-        motor1_speed = 100;
-        motor2_input1 = 0;
-        motor2_input2 = 1;
-        motor2_speed = 200;
+        motor1_speed = motor1_speed - 10;
+        motor2_input1 = 1;
+        motor2_input2 = 0;
+        motor2_speed = motor2_speed + 10;
         motor1.move(motor1_input1, motor1_input2, motor1_speed);
         motor2.move(motor2_input1, motor2_input2, motor2_speed);
       }
       if (position_status = 1 && sensor_distance != 3 && sensor_distance != 2 && sensor_distance != 1 && sensor_distance != 0) {
-          motor1_input1 = 0;
-          motor1_input2 = 1;
-          motor1_speed = 100;
+          motor1_input1 = 1;
+          motor1_input2 = 0;
+          motor1_speed = motor1_speed + 10;
           motor2_input1 = 1;
           motor2_input2 = 0;
-          motor2_speed = 200;
+          motor2_speed = motor2_speed - 10;
           motor1.move(motor1_input1, motor1_input2, motor1_speed);
           motor2.move(motor2_input1, motor2_input2, motor2_speed);
-        }
-      } else if (sensor_distance < 3) {
+      }
+      }
+      if (sensor_distance < 3) {
         motor1_input1 = 0;
         motor1_input2 = 1;
-        motor1_speed = 200;
+        motor1_speed = 0;
         motor2_input1 = 0;
         motor2_input2 = 1;
-        motor2_speed = 200;
+        motor2_speed = 0;
         motor1.move(motor1_input1, motor1_input2, motor1_speed);
         motor1.move(motor2_input1, motor2_input2, motor2_speed);
       }
@@ -123,18 +218,9 @@ void loop() {
         motor1.move(motor1_input1, motor1_input2, motor1_speed);
         motor2.move(motor2_input1, motor2_input2, motor2_speed);
       }
-      if (i == 90) {
+      if (i == 110) {
         x = -1;
-        i = 0;
-        servo1.move(-90);
       }
       delay(5);
-      pos = degree;
-      if (pos < 90) {
-      position_status = 2; // right
-      }
-      if (pos > 89) {
-      position_status = 1; // left
-      }
     }
   }
