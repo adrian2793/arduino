@@ -37,6 +37,10 @@ int motor2_input1 = 0;
 int motor2_input2 = 0;
 int motor2_speed = 150;
 int x = 1;
+int calculated_distance = 0;
+int sensor_config_max = 20;
+int sensor_config_min = 20;
+bool true22 = true;
 
 void setup() {
   lcd_port.init();
@@ -58,7 +62,14 @@ void setup() {
 }
 
 void loop() {
-  drive_right();
+  drive_autonomous();
+}
+
+int calculate_2_wall_distance(int measure_value) {
+  calculated_distance = measure_value;
+  sensor_config_max = calculated_distance;
+  sensor_config_min = calculated_distance;
+  return true;
 }
 
 void drive_right() {
@@ -85,38 +96,36 @@ void drive_right() {
   sensor_distance = (time / 2) * 0.03432;
   Serial.println(sensor_distance);
   if (sensor_distance < 20) {
-    if (sensor_distance != 3 && sensor_distance != 2 && sensor_distance != 1 && sensor_distance != 0) {
-        motor1_input1 = 1;
-        motor1_input2 = 0;
-        motor1_speed = motor1_speed - 10;
-        if (motor2_speed < 0) {
-          motor2_speed = 0;
-        }
-        motor2_input1 = 1;
-        motor2_input2 = 0;
-        motor2_speed = motor2_speed + 10;
-        if (motor2_speed > 255) {
-          motor2_speed = 255;
-        }
-        motor1.move(motor1_input1, motor1_input2, motor1_speed);
-        motor2.move(motor2_input1, motor2_input2, motor2_speed);
-    }
-    } else if (sensor_distance > 20) {
-      motor1_input1 = 1;
-      motor1_input2 = 0;
-      motor1_speed = motor1_speed + 10;
+      motor1_input1 = 0; // 1
+      motor1_input2 = 1; // 0
+      motor1_speed = motor1_speed - 10;
+      if (motor1_speed < 0) {
+        motor1_speed = 0;
+      }
+      motor2_input1 = 1; // 1
+      motor2_input2 = 0; // 0
+      motor2_speed = motor2_speed + 10;
       if (motor2_speed > 255) {
         motor2_speed = 255;
       }
-      motor2_input1 = 1;
-      motor2_input2 = 0;
-      motor2_speed = motor2_speed - 10;
-      if (motor2_speed < 0) {
-        motor2_speed = 0;
-      }
       motor1.move(motor1_input1, motor1_input2, motor1_speed);
       motor2.move(motor2_input1, motor2_input2, motor2_speed);
-    }
+      } else {
+        motor1_input1 = 1;
+        motor1_input2 = 0;
+        motor1_speed = motor1_speed + 10;
+         if (motor1_speed > 255) {
+          motor1_speed = 255;
+       }
+        motor2_input1 = 1;
+        motor2_input2 = 0;
+        motor2_speed = motor2_speed - 10;
+        if (motor2_speed < 0) {
+          motor2_speed = 0;
+       }
+       motor1.move(motor1_input1, motor1_input2, motor1_speed);
+        motor2.move(motor2_input1, motor2_input2, motor2_speed);
+      }
     if (sensor_distance < 3) {
       motor1_input1 = 0;
       motor1_input2 = 1;
@@ -131,9 +140,9 @@ void drive_right() {
       motor1_input1 = 1;
       motor1_input2 = 0;
       motor1_speed = 100;
-      motor2_input1 = 1;
-      motor2_input2 = 0;
-      motor2_speed = 100;
+      motor2_input1 = 0;
+      motor2_input2 = 1;
+      motor2_speed = 255;
       motor1.move(motor1_input1, motor1_input2, motor1_speed);
       motor2.move(motor2_input1, motor2_input2, motor2_speed);
     }
@@ -176,7 +185,10 @@ void drive_autonomous() {
     long time = pulseIn(sensor_input, 1);
     sensor_distance = (time / 2) * 0.03432;
     Serial.println(sensor_distance);
-    if (sensor_distance < 20) {
+    calculate_2_wall_distance(sensor_distance);
+    Serial.println(calculated_distance);
+    if (true22 == true) {
+    if (sensor_distance < sensor_config_max) {
       if (position_status = 2 && sensor_distance != 3 && sensor_distance != 2 && sensor_distance != 1 && sensor_distance != 0){
         motor1_input1 = 1;
         motor1_input2 = 0;
@@ -208,7 +220,7 @@ void drive_autonomous() {
         motor1.move(motor1_input1, motor1_input2, motor1_speed);
         motor1.move(motor2_input1, motor2_input2, motor2_speed);
       }
-      if (sensor_distance > 20 && sensor_distance != 3 && sensor_distance != 2 && sensor_distance != 1 && sensor_distance != 0) {
+      if (sensor_distance > sensor_config_max && sensor_distance != 3 && sensor_distance != 2 && sensor_distance != 1 && sensor_distance != 0) {
         motor1_input1 = 1;
         motor1_input2 = 0;
         motor1_speed = 100;
@@ -222,5 +234,15 @@ void drive_autonomous() {
         x = -1;
       }
       delay(5);
+    } else {
+      motor1_input1 = 1;
+      motor1_input2 = 0;
+      motor1_speed = 85;
+      motor2_input1 = 1;
+      motor2_input2 = 0;
+      motor2_speed = 85;
+      motor1.move(motor1_input1, motor1_input2, motor1_speed);
+      motor2.move(motor2_input1, motor2_input2, motor2_speed);
     }
+  }
   }
