@@ -49,7 +49,7 @@ void setup() {
   lcd_port.leftToRight();
   lcd_port.noBlink();
   lcd_port.setCursor(0, 0);
-  Serial.begin(250000);
+  Serial.begin(9600);
   servo1.attach(3);
   pinMode(engine1, OUTPUT);
   pinMode(engine2, OUTPUT);
@@ -62,7 +62,7 @@ void setup() {
 }
 
 void loop() {
-  drive_autonomous();
+  drive_right();
 }
 
 int calculate_2_wall_distance(int measure_value) {
@@ -77,18 +77,15 @@ void drive_right() {
   current_task = "Drive right";
   current_task2 = String(motor2_input1) + ", " + String(motor2_input2) + ", " + String(motor2_speed);
   dot_1run = dot_1run + 1;
-  lcd_port.clear();
-  lcd_port.setCursor(0, 0);
-  lcd_port.print(current_task);
-  lcd_port.setCursor(0, 1);
-  lcd_port.print(current_task2);
-  x = 1;
   Serial.print("Speed1: ");
   Serial.println(motor1_speed);
   Serial.print("Speed2: ");
   Serial.println(motor2_speed);
-  pos = i;
-  servo1.move(0);
+  pos = pos + 1;
+  if (pos == 30) {
+    pos = 0;
+  }
+  servo1.move(pos);
   digitalWrite(sensor_output, 0);
   digitalWrite(sensor_output, 1);
   digitalWrite(sensor_output, 0);
@@ -126,7 +123,7 @@ void drive_right() {
        motor1.move(motor1_input1, motor1_input2, motor1_speed);
         motor2.move(motor2_input1, motor2_input2, motor2_speed);
       }
-    if (sensor_distance < 3) {
+    if (sensor_distance < 5) {
       motor1_input1 = 0;
       motor1_input2 = 1;
       motor1_speed = 0;
@@ -139,9 +136,9 @@ void drive_right() {
     if (sensor_distance > 20 && sensor_distance != 3 && sensor_distance != 2 && sensor_distance != 1 && sensor_distance != 0) {
       motor1_input1 = 1;
       motor1_input2 = 0;
-      motor1_speed = 100;
-      motor2_input1 = 0;
-      motor2_input2 = 1;
+      motor1_speed = 255;
+      motor2_input1 = 1;
+      motor2_input2 = 0;
       motor2_speed = 255;
       motor1.move(motor1_input1, motor1_input2, motor1_speed);
       motor2.move(motor2_input1, motor2_input2, motor2_speed);
@@ -185,8 +182,6 @@ void drive_autonomous() {
     long time = pulseIn(sensor_input, 1);
     sensor_distance = (time / 2) * 0.03432;
     Serial.println(sensor_distance);
-    calculate_2_wall_distance(sensor_distance);
-    Serial.println(calculated_distance);
     if (true22 == true) {
     if (sensor_distance < sensor_config_max) {
       if (position_status = 2 && sensor_distance != 3 && sensor_distance != 2 && sensor_distance != 1 && sensor_distance != 0){
